@@ -69,6 +69,13 @@ SELECT * FROM emprestimo;
 SELECT * FROM aluno;
 SELECT * FROM livro;
 
+-- alterações das tabelas no banco
+ALTER TABLE aluno ADD COLUMN status_aluno BOOLEAN DEFAULT TRUE;
+ALTER TABLE livro ADD COLUMN status_livro BOOLEAN DEFAULT TRUE;
+ALTER TABLE emprestimo ADD COLUMN status_livro BOOLEAN DEFAULT TRUE;
+ALTER TABLE emprestimo ADD COLUMN status_emprestimo_resgistro BOOLEAN DEFAULT TRUE;
+
+
 -- ALUNO
 INSERT INTO Aluno (nome, sobrenome, data_nascimento, endereco, email, celular) 
 VALUES 
