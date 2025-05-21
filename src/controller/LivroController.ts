@@ -71,22 +71,23 @@ class LivroController extends Livro {
             if (result.queryResult && result.idLivro) {
                 novoLivro.setIdLivro(result.idLivro);
 
-                // Inserindo capa do livro, se informada
+                // Se houver um a imagem de capa no request
                 if (req.file) {
                     const ext = path.extname(req.file.originalname);
-                    const sanitize = (texto: string) => texto
-                        .replace(/[^a-zA-Z0-9-_ ]/g, '') // remove caracteres especiais (exceto espaço, hífen e underscore)
-                        .replace(/ /g, "_");             // troca espaços por underscores
 
-                    const tituloSanitizado = sanitize(novoLivro.getTitulo());
-                    const editoraSanitizada = sanitize(novoLivro.getEditora());
+                    // Função para gerar nome aleatório de 16 caracteres
+                    function gerarNomeAleatorio(ext: string): string {
+                        const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+                        let nome = '';
+                        for ( let i = 0; i < 16; i++) {
+                            nome += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
+                        }
+                        return nome + ext;
+                    }
 
-                    const novoNome = `${tituloSanitizado}_${editoraSanitizada}${ext}`;
-                    const antigoPath = req.file.path;
-                    const novoPath = path.resolve(req.file.destination, novoNome);
+                    const novoNome = gerarNomeAleatorio(ext);
 
-                    fs.renameSync(antigoPath, novoPath);
-
+                    // Move a imagem da pasta temporária para a paste  upload/cover com novo nome
                     await Livro.atualizarImagemCapa(novoNome, novoLivro.getIdLivro());
                 }
 
