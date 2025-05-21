@@ -111,6 +111,8 @@ ALTER TABLE IF EXISTS Aluno ADD COLUMN IF NOT EXISTS status_aluno BOOLEAN DEFAUL
 ALTER TABLE IF EXISTS Emprestimo ADD COLUMN IF NOT EXISTS status_emprestimo_registro BOOLEAN DEFAULT TRUE;
 ALTER TABLE IF EXISTS Livro ADD COLUMN IF NOT EXISTS status_livro BOOLEAN DEFAULT TRUE;
 
+ALTER TABLE livro ADD COLUMN capa VARCHAR(200);
+
 -- ALUNO
 INSERT INTO Aluno (nome, sobrenome, data_nascimento, endereco, email, celular) 
 VALUES 
