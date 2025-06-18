@@ -52,7 +52,7 @@ class AlunoController extends Aluno {
             const novoAluno = new Aluno(
                 dadosRecebidos.nome,
                 dadosRecebidos.sobrenome,
-                dadosRecebidos.dataNascimento ?? new Date("1900-01-01"),
+                dadosRecebidos.dataNascimento ?? new Date(),
                 dadosRecebidos.endereco ?? '',
                 dadosRecebidos.email ?? '',
                 dadosRecebidos.celular              
@@ -70,7 +70,7 @@ class AlunoController extends Aluno {
         } catch (error) {
             console.log(`Erro ao cadastrar o aluno: ${error}`);
             return res.status(400).json('Erro ao cadastrar o aluno');
-        }
+        } 
     }
 
     /**

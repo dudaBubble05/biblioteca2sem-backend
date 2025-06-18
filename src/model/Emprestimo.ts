@@ -157,7 +157,7 @@ export class Emprestimo{
                        l.titulo, l.autor, l.editora
                 FROM Emprestimo e
                 JOIN Aluno a ON e.id_aluno = a.id_aluno
-                JOIN Livro l ON e.id_livro = l.id_livro;
+                JOIN Livro l ON e.id_livro = l.id_livro
                 WHERE e.status_emprestimo_registro = TRUE;
 
             `;

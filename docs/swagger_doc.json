@@ -1,0 +1,781 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "v1.0.0",
+    "title": "Biblioteca",
+    "description": "Implementação do Swagger à API"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3334",
+      "description": ""
+    }
+  ],
+  "paths": {
+    "/listar/aluno": {
+      "get": {
+        "tags": ["Alunos"],
+        "summary": "Listar alunos cadastrados",
+        "description": "Esta rota executa a listagem dos alunos cadastrados no banco de dados.",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Lista de alunos retornada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Aluno" }
+                },
+                "examples": {
+                  "exemplo": {
+                    "value": [
+                      {
+                        "idAluno": 4,
+                        "ra": "AAA0004",
+                        "statusAluno": true,
+                        "nome": "Natalie",
+                        "sobrenome": "Portman",
+                        "dataNascimento": "2002-11-05T02:00:00.000Z",
+                        "endereco": "Rua Hollywood, 101",
+                        "email": "natalie.portman@cinema.com",
+                        "celular": "16993930703"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Não foi possível realizar a listagem de alunos",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "erro": { "type": "string", "example": "Erro ao buscar alunos" }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token de autenticação ausente ou inválido.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "erro": { "type": "string", "example": "Token inválido ou ausente" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/novo/aluno": {
+      "post": {
+        "tags": ["Alunos"],
+        "summary": "Cadastrar novo aluno",
+        "description": "Esta rota recebe informações de um aluno para cadastrar no banco de dados.",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "nome": { "type": "string", "example": "Neil" },
+                  "sobrenome": { "type": "string", "example": "Josten" },
+                  "dataNascimento": { "type": "string", "format": "date", "example": "1995-01-26" },
+                  "endereco": { "type": "string", "example": "Parque Leblon, 478" },
+                  "email": { "type": "string", "format": "email", "example": "neil.abram.josten@gmail.com" },
+                  "celular": { "type": "string", "example": "85996712239" }
+                },
+                "required": ["nome", "sobrenome", "dataNascimento", "endereco", "email", "celular"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Aluno cadastrado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "mensagem": { "type": "string", "example": "Aluno cadastrado com sucesso" }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Não foi possível cadastrar o aluno",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "erro": { "type": "string", "example": "Dados inválidos ou incompletos" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/remove/aluno": {
+      "put": {
+        "tags": ["Alunos"],
+        "summary": "Remover aluno",
+        "description": "Esta rota remove (ou oculta) um aluno do banco de dados.",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "idAluno": { "type": "integer", "example": 4 }
+                },
+                "required": ["idAluno"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Aluno removido com sucesso do banco de dados.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "mensagem": { "type": "string", "example": "Aluno removido com sucesso" }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Não foi possível remover o aluno do banco de dados.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "erro": { "type": "string", "example": "Aluno não encontrado ou erro interno" }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token de autenticação ausente ou inválido.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "erro": { "type": "string", "example": "Token inválido ou ausente" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/atualiza/aluno": {
+      "put": {
+        "tags": ["Alunos"],
+        "summary": "Atualizar dados de um aluno",
+        "description": "Esta rota atualiza as informações de um aluno existente no banco de dados.",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "idAluno": { "type": "integer", "example": 9 },
+                  "ra": { "type": "string", "example": "AAA0009" },
+                  "statusAluno": { "type": "boolean", "example": true },
+                  "nome": { "type": "string", "example": "Gabriela" },
+                  "sobrenome": { "type": "string", "example": "Guimarães" },
+                  "dataNascimento": { "type": "string", "format": "date-time", "example": "2005-09-19T03:00:00.000Z" },
+                  "endereco": { "type": "string", "example": "Rua Volei, 2028" },
+                  "email": { "type": "string", "example": "gaby@volei.com" },
+                  "celular": { "type": "string", "example": "16985432215" }
+                },
+                "required": [
+                  "idAluno",
+                  "ra",
+                  "statusAluno",
+                  "nome",
+                  "sobrenome",
+                  "dataNascimento",
+                  "endereco",
+                  "email",
+                  "celular"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Aluno atualizado com sucesso.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "mensagem": { "type": "string", "example": "Aluno atualizado com sucesso" }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro ao atualizar informações do Aluno.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "erro": { "type": "string", "example": "ID inexistente ou dados inválidos" }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token de autenticação ausente ou inválido.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "erro": { "type": "string", "example": "Token inválido ou ausente" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/novo/livro": {
+      "post": {
+        "tags": ["Livros"],
+        "summary": "Cadastrar novo livro",
+        "description": "Esta rota recebe informações de um livro para cadastrar no banco de dados.",
+        "security": [
+          { "apiKeyAuth": [] }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "titulo": { "type": "string", "example": "O Hobbit" },
+                  "autor": { "type": "string", "example": "J.R.R. Tolkien" },
+                  "editora": { "type": "string", "example": "HarperCollins" },
+                  "anoPublicacao": { "type": "string", "example": "1937" },
+                  "isbn": { "type": "string", "example": "978-0007458424" },
+                  "quantTotal": { "type": "integer", "example": 9 },
+                  "quantDisponivel": { "type": "integer", "example": 9 },
+                  "valorAquisicao": { "type": "string", "example": "140.00" },
+                  "statusLivroEmprestado": { "type": "string", "example": "Disponível" }
+                },
+                "required": [
+                  "titulo",
+                  "autor",
+                  "editora",
+                  "anoPublicacao",
+                  "isbn",
+                  "quantTotal",
+                  "quantDisponivel",
+                  "valorAquisicao",
+                  "statusLivroEmprestado"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Livro cadastrado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "mensagem": {
+                      "type": "string",
+                      "example": "Livro cadastrado com sucesso"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro ao cadastrar livro",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "erro": {
+                      "type": "string",
+                      "example": "Dados inválidos ou incompletos"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/listar/livro": {
+      "get": {
+        "tags": ["Livros"],
+        "summary": "Listar livros cadastrados",
+        "description": "Esta rota retorna a lista de livros cadastrados.",
+        "security": [
+          { "apiKeyAuth": [] }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lista de livros retornada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "idLivro": { "type": "integer", "example": 6 },
+                      "statusLivro": { "type": "boolean", "example": true },
+                      "capa": { "type": "string", "nullable": true, "example": null },
+                      "titulo": { "type": "string", "example": "O Hobbit" },
+                      "autor": { "type": "string", "example": "J.R.R. Tolkien" },
+                      "editora": { "type": "string", "example": "HarperCollins" },
+                      "anoPublicacao": { "type": "string", "example": "1937" },
+                      "isbn": { "type": "string", "example": "978-0007458424" },
+                      "quantTotal": { "type": "integer", "example": 9 },
+                      "quantDisponivel": { "type": "integer", "example": 9 },
+                      "valorAquisicao": { "type": "string", "example": "140.00" },
+                      "statusLivroEmprestado": { "type": "string", "example": "Disponível" }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro ao listar livros",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "erro": { "type": "string", "example": "Erro interno ao listar livros" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/remove/livro": {
+      "put": {
+        "tags": ["Livros"],
+        "summary": "Remover livro",
+        "description": "Esta rota remove (ou oculta) um livro do banco de dados.",
+        "security": [
+          { "apiKeyAuth": [] }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "idLivro": { "type": "integer", "example": 6 }
+                },
+                "required": ["idLivro"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Livro removido com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "mensagem": {
+                      "type": "string",
+                      "example": "Livro removido com sucesso"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro ao remover livro",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "erro": {
+                      "type": "string",
+                      "example": "Livro não encontrado ou erro interno"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/atualiza/livro": {
+      "put": {
+        "tags": ["Livros"],
+        "summary": "Atualizar livro",
+        "description": "Atualiza as informações de um livro cadastrado.",
+        "security": [
+          { "apiKeyAuth": [] }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "idLivro": { "type": "integer", "example": 6 },
+                  "statusLivro": { "type": "boolean", "example": true },
+                  "capa": { "type": "string", "nullable": true, "example": null },
+                  "titulo": { "type": "string", "example": "O Hobbit" },
+                  "autor": { "type": "string", "example": "J.R.R. Tolkien" },
+                  "editora": { "type": "string", "example": "HarperCollins" },
+                  "anoPublicacao": { "type": "string", "example": "1937" },
+                  "isbn": { "type": "string", "example": "978-0007458424" },
+                  "quantTotal": { "type": "integer", "example": 9 },
+                  "quantDisponivel": { "type": "integer", "example": 9 },
+                  "valorAquisicao": { "type": "string", "example": "140.00" },
+                  "statusLivroEmprestado": { "type": "string", "example": "Disponível" }
+                },
+                "required": [
+                  "idLivro",
+                  "statusLivro",
+                  "titulo",
+                  "autor",
+                  "editora",
+                  "anoPublicacao",
+                  "isbn",
+                  "quantTotal",
+                  "quantDisponivel",
+                  "valorAquisicao",
+                  "statusLivroEmprestado"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Livro atualizado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "mensagem": {
+                      "type": "string",
+                      "example": "Livro atualizado com sucesso"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erro ao atualizar livro",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "erro": {
+                      "type": "string",
+                      "example": "Erro ao atualizar dados do livro"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/novo/emprestimo": {
+  "post": {
+    "tags": ["Emprestimos"],
+    "summary": "Cadastrar novo empréstimo",
+    "description": "Esta rota recebe informações para cadastrar um novo empréstimo no banco de dados.",
+    "security": [{ "bearerAuth": [] }],
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "idAluno": { "type": "integer", "example": 3 },
+              "idLivro": { "type": "integer", "example": 5 },
+              "dataEmprestimo": { "type": "string", "format": "date-time", "example": "2024-09-03T03:00:00.000Z" },
+              "dataDevolucao": { "type": "string", "format": "date-time", "example": "2024-09-17T03:00:00.000Z" },
+              "statusEmprestimo": { "type": "string", "example": "Em andamento" }
+            },
+            "required": ["idAluno", "idLivro", "dataEmprestimo", "dataDevolucao", "statusEmprestimo"]
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": {
+        "description": "Empréstimo cadastrado com sucesso",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "mensagem": { "type": "string", "example": "Empréstimo cadastrado com sucesso" }
+              }
+            }
+          }
+        }
+      },
+      "400": {
+        "description": "Erro ao cadastrar empréstimo",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "erro": { "type": "string", "example": "Dados inválidos ou incompletos" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+},
+"/listar/emprestimo": {
+  "get": {
+    "tags": ["Emprestimos"],
+    "summary": "Listar empréstimos cadastrados",
+    "description": "Esta rota retorna a lista de empréstimos cadastrados com detalhes de aluno e livro.",
+    "security": [{ "bearerAuth": [] }],
+    "responses": {
+      "200": {
+        "description": "Lista de empréstimos retornada com sucesso",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "idEmprestimo": { "type": "integer", "example": 3 },
+                  "idAluno": { "type": "integer", "example": 3 },
+                  "idLivro": { "type": "integer", "example": 5 },
+                  "dataEmprestimo": { "type": "string", "format": "date-time", "example": "2024-09-03T03:00:00.000Z" },
+                  "dataDevolucao": { "type": "string", "format": "date-time", "example": "2024-09-17T03:00:00.000Z" },
+                  "statusEmprestimo": { "type": "string", "example": "Em andamento" },
+                  "aluno": {
+                    "type": "object",
+                    "properties": {
+                      "ra": { "type": "string", "example": "AAA0003" },
+                      "nome": { "type": "string", "example": "Angelina" },
+                      "sobrenome": { "type": "string", "example": "Jolie" },
+                      "celular": { "type": "string", "example": "16991915502" }
+                    }
+                  },
+                  "livro": {
+                    "type": "object",
+                    "properties": {
+                      "titulo": { "type": "string", "example": "A Revolução dos Bichos" },
+                      "autor": { "type": "string", "example": "George Orwell" },
+                      "editora": { "type": "string", "example": "Penguin" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "400": {
+        "description": "Erro ao listar empréstimos",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "erro": { "type": "string", "example": "Erro interno ao listar empréstimos" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+},
+"/remove/emprestimo": {
+  "put": {
+    "tags": ["Emprestimos"],
+    "summary": "Remover empréstimo",
+    "description": "Esta rota remove (ou oculta) um empréstimo do banco de dados.",
+    "security": [{ "bearerAuth": [] }],
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "idEmprestimo": { "type": "integer", "example": 3 }
+            },
+            "required": ["idEmprestimo"]
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": {
+        "description": "Empréstimo removido com sucesso",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "mensagem": { "type": "string", "example": "Empréstimo removido com sucesso" }
+              }
+            }
+          }
+        }
+      },
+      "400": {
+        "description": "Erro ao remover empréstimo",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "erro": { "type": "string", "example": "Empréstimo não encontrado ou erro interno" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+},
+"/atualiza/emprestimo": {
+  "put": {
+    "tags": ["Emprestimos"],
+    "summary": "Atualizar empréstimo",
+    "description": "Atualiza as informações de um empréstimo cadastrado.",
+    "security": [{ "bearerAuth": [] }],
+    "requestBody": {
+      "required": true,
+      "content": {
+        "application/json": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "idEmprestimo": { "type": "integer", "example": 3 },
+              "idAluno": { "type": "integer", "example": 3 },
+              "idLivro": { "type": "integer", "example": 5 },
+              "dataEmprestimo": { "type": "string", "format": "date-time", "example": "2024-09-03T03:00:00.000Z" },
+              "dataDevolucao": { "type": "string", "format": "date-time", "example": "2024-09-17T03:00:00.000Z" },
+              "statusEmprestimo": { "type": "string", "example": "Em andamento" }
+            },
+            "required": ["idEmprestimo", "idAluno", "idLivro", "dataEmprestimo", "dataDevolucao", "statusEmprestimo"]
+          }
+        }
+      }
+    },
+    "responses": {
+      "200": {
+        "description": "Empréstimo atualizado com sucesso",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "mensagem": { "type": "string", "example": "Empréstimo atualizado com sucesso" }
+              }
+            }
+          }
+        }
+      },
+      "400": {
+        "description": "Erro ao atualizar empréstimo",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "erro": { "type": "string", "example": "Erro ao atualizar dados do empréstimo" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  }
+},
+"components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      },
+      "apiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-api-key"
+      }
+    }
+  }
+}
+

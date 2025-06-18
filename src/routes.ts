@@ -5,8 +5,13 @@ import LivroController from "./controller/LivroController";
 import EmprestimoController from "./controller/EmprestimoController";
 import UsuarioController from "./controller/UsuarioController";
 import {upload} from "./config/multerConfig"; // caminho pode variar dependendo da estrutura
+import swaggerUi from "swagger-ui-express"; // Importa a API do swagger
+import swaggerOutput from "../docs/swagger_doc.json"; // Importa o arquivo de saída do swagger
 
 const router = express.Router();
+
+// Rota para acessar a documentação
+router.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerOutput)); 
 
 router.get('/', (req, res) => {
     res.json({ mensagem: "Rota padrão" })
